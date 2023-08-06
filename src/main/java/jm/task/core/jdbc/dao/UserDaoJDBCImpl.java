@@ -17,7 +17,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public void createUsersTable() {
         try (Statement statement = connection.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS users (" +
-                    "id BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY," +
+                    "id BIGINT PRIMARY KEY AUTO_INCREMENT," +
                     "column_name VARCHAR(45) NOT NULL," +
                     "column_lastName VARCHAR(45) NOT NULL," +
                     "column_age TINYINT NOT NULL" +
@@ -50,7 +50,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 preparedStatement.setByte(3, age);
 
                 preparedStatement.executeUpdate();
-                System.out.println("User с именем " + name + " добавлен в базу данных");
+
             } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -70,25 +70,25 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users;";
+        String sql = "SELECT * FROM users";
+        List<User> userList = new ArrayList<>();
 
-        try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
+        try (ResultSet resultSet = connection.prepareStatement(sql).executeQuery()) {
             while (resultSet.next()) {
+                User user = new User(resultSet.getString("column_name"),
+                        resultSet.getString("column_lastName"),
+                        resultSet.getByte("column_age"));
 
-                String name = resultSet.getString("column_name");
-                String lastName = resultSet.getString("column_lastname");
-                byte age = resultSet.getByte("column_age");
-                User user = new User(name, lastName, age);
-                users.add(user);
+                user.setId(resultSet.getLong("id"));
+                userList.add(user);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return users;
+        return userList;
     }
+
+
 
     public void cleanUsersTable() {
         String sql = "TRUNCATE TABLE users;";

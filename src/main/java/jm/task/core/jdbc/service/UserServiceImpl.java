@@ -18,6 +18,7 @@ public class UserServiceImpl implements UserService {
 
     public void saveUser(String name, String lastName, byte age) {
         userDao.saveUser(name, lastName, age);
+        System.out.println("User с именем " + name + " добавлен в базу данных\n");
 
     }
 
@@ -27,7 +28,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public List<User> getAllUsers() {
-
+        List<User> users = userDao.getAllUsers();
+        users.forEach(System.out::println);
         return userDao.getAllUsers();
     }
 
