@@ -10,6 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="hibernate-java-config-example" target="1.7" />
       <module name="NewMavenProject" target="17" />
     </bytecodeTargetLevel>
   </component>
